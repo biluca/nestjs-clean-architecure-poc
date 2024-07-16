@@ -1,26 +1,19 @@
+import { Injectable } from '@nestjs/common';
 import * as sqlite3 from 'sqlite3';
+import { GenericGateway } from 'src/commons/gateway.generic';
 import { Event } from 'src/modules/events/domain/models/event.model';
 
-export class SQLiteGateway {
+@Injectable()
+export class SQLiteGateway extends GenericGateway {
   private DB_PATH = 'src/database/sqlite/database.sqlite';
-  private database: sqlite3.Database;
 
   constructor() {
-    this.database = new sqlite3.Database(
-      this.DB_PATH,
-      sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE,
-      (err) => {
-        if (err) {
-          console.error('Error opening database: ', err.message);
-        } else {
-          console.log('Connected to the SQLite database.');
-          this.createTable();
-        }
-      },
-    );
+    super();
+    this.createTable();
   }
 
   private createTable(): void {
+    this.logger.info('Reach createTable() on SQLiteGateway');
     const sql = `
       CREATE TABLE IF NOT EXISTS events (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -29,19 +22,48 @@ export class SQLiteGateway {
         timestamp DATETIME NOT NULL
       );
     `;
-    this.database.run(sql, (err) => {
+    this.getSQLiteClient().run(sql, (err) => {
       if (err) {
         console.error('Error creating table: ', err.message);
+      }
+    });
+
+    this.getSQLiteClient().close();
+  }
+
+  public getSQLiteClient() {
+    return new sqlite3.Database(
+      this.DB_PATH,
+      sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE,
+      (err) => {
+        if (err) {
+          this.logger.error('Error Opening SQLite Database on SQLiteGateway');
+        } else {
+          this.logger.info('Connected to the SQLite Database on SQLiteGateway');
+        }
+      },
+    );
+  }
+
+  public close(): void {
+    this.getSQLiteClient().close((err) => {
+      if (err) {
+        this.logger.error(
+          'Error on Closing the Connection to the SQLite Database on SQLiteGateway',
+        );
       } else {
-        console.log('Table "events" created or already exists.');
+        this.logger.info(
+          'Closed the Connection to the SQLite Database on SQLiteGateway',
+        );
       }
     });
   }
 
   public getAll(): Promise<Array<Event>> {
+    this.logger.info('Reach getAll() on SQLiteGateway');
     return new Promise((resolve, reject) => {
       const sql = 'SELECT * FROM events';
-      this.database.all(sql, (err, rows) => {
+      this.getSQLiteClient().all(sql, (err, rows) => {
         if (err || !rows) {
           reject('Error retrieving Events');
         } else {
@@ -57,7 +79,7 @@ export class SQLiteGateway {
 
             events.push(event);
           });
-
+          this.getSQLiteClient().close();
           resolve(events);
         }
       });
@@ -65,10 +87,11 @@ export class SQLiteGateway {
   }
 
   public get(id: number): Promise<Event> {
+    this.logger.info(`Reach get(${id}) on SQLiteGateway`);
     return new Promise((resolve, reject) => {
       const sql = `SELECT * FROM events WHERE id = ${id}`;
 
-      this.database.get(sql, (err, row) => {
+      this.getSQLiteClient().get(sql, (err, row) => {
         if (err || !row) {
           reject('Error retrieving Event');
         } else {
@@ -78,6 +101,8 @@ export class SQLiteGateway {
             .withEventKey(row['event_key'])
             .withTimestamp(row['timestamp'])
             .build();
+
+          this.getSQLiteClient().close();
           resolve(event);
         }
       });
@@ -85,16 +110,18 @@ export class SQLiteGateway {
   }
 
   public create(event: Event): Promise<Event> {
+    this.logger.info('Reach create() on SQLiteGateway');
     return new Promise((resolve, reject) => {
       const sql =
         'INSERT INTO events (event_group, event_key, timestamp) VALUES (?,?,?);';
-      this.database.run(
+      this.getSQLiteClient().run(
         sql,
         [event.event_group, event.event_key, event.timestamp],
-        function (err) {
+        (err) => {
           if (err) {
             reject('Error inserting an Event');
           } else {
+            this.getSQLiteClient().close();
             resolve(event);
           }
         },
@@ -103,12 +130,14 @@ export class SQLiteGateway {
   }
 
   public delete(id: number): Promise<number> {
+    this.logger.info(`Reach delete(${id}) on SQLiteGateway`);
     return new Promise((resolve, reject) => {
       const sql = 'DELETE FROM events WHERE id = ?';
-      this.database.run(sql, [id], function (err) {
+      this.getSQLiteClient().run(sql, [id], (err) => {
         if (err) {
           reject('Error deleting Event');
         } else {
+          this.getSQLiteClient().close();
           resolve(id);
         }
       });
