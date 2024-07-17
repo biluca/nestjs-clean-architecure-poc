@@ -38,8 +38,6 @@ export class SQLiteGateway extends GenericGateway {
       (err) => {
         if (err) {
           this.logger.error('Error Opening SQLite Database on SQLiteGateway');
-        } else {
-          this.logger.info('Connected to the SQLite Database on SQLiteGateway');
         }
       },
     );
