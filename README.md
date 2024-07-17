@@ -1,35 +1,34 @@
-# A Nest.js Project as a Clean Architecture Proof of Concept
+# Event Tracker API - Nest.js
+### Clean Architecture - Proof of Concept
+
 
 <p align="center">
   <a href="http://nestjs.com/" target="blank">
-  <img src="src\resources\img\nestjs.png" height="300" alt="Nest Logo" />
+  <img src="https://nestjs.com/logo-small-gradient.76616405.svg" height="150" alt="Nest Logo" />
   </a>
 </p>
 
-
 ## Description
 
-This is a simple POC (Proof of Concept) Project Organization using the Clean Architecure Principles. The main idea is to propose some ideas regarding:
+This repository showcases a Proof of Concept (POC) for Project Organization using Clean Architecture principles. The main objectives of this project include:
 
-- Files & Folders Structure;
-- Nomenclature of Components;
-- Exploration of Clean Architecture Principles;
+- Structuring files and folders;
+- Standardizing component nomenclature;
+- Exploring Clean Architecture principles;
 
-For this project, it was chosen a CRUD API, which allows the user to create and manage events for track purposes (Event Tracker API). The code shows the possibilities of using a single and solid core of business rules, which was called the Application Domain, alongside the Flow Control and Service Providers Layers.
+The project features a CRUD API, called as the Event Tracker API, which enables users to create and manage events. This POC illustrates the implementation of a solid core of business rules, referred to as the Application Domain, along with Flow Control and Service Providers layers.
 
-This project was separated in two versions, the first was based on a integration with the Self-Contained SQLite Database, the other version was based on a integration with the also Self-Contained DuckDB Database. This approach was used to show the easiness of changes and adaptability that the Clean Archicture provides, protecting the Application Domain from external (and quite commmon) changes.
+This API is composed by two versions: one integrated with a self-contained [SQLite](https://www.sqlite.org/) database and the other with a self-contained [DuckDB](https://duckdb.org/) database. This dual approach demonstrates the ease of adaptability and resilience provided by a Clean Architecture, ensuring the Application Domain remains unaffected by external (and quite common) changes.
 
 ## Clean Architecture
 
 <p align="center">
-  <a href="http://nestjs.com/" target="blank">
   <img src="src\resources\img\cleanarchitecture.png" height="300" alt="Clean Architecture" />
-  </a>
 </p>
 
 In his book, Clean Architecture,  Robert C. Martin (Uncle Bob) outlines principles for designing software systems that are flexible, maintainable, and scalable. It advocates for separating the system into layers with clear responsibilities, promoting decoupling between high-level and low-level components. The core idea is to structure the system such that the business logic is independent of frameworks, user interfaces, databases, and external agencies. 
 
-Key concepts include:
+**Key concepts include:**
 
 - **Dependency Rule:** Source code dependencies can only point inward, towards higher-level policies.
 - **Entities:** Represent the business objects and encapsulate the core business rules.
@@ -41,38 +40,33 @@ The architecture emphasizes keeping the system's core business logic unaffected 
 
 ## The Project's Proposal
 
-Highly inspired by the principles of Uncle Bob, alongside a mix of experience building back-end projects and Architectural discussions with peers, I have proposed and idea on how organize a project, since the organization of files and folders, until the naming the main components. You can see the concept in the diagram below:
+Inspired by Uncle Bob's principles, my experience in building back-end projects and engaging in architectural discussions with peers, I've proposed an organization for projects, from files and folders structure to the naming of main components. The concept is illustrated in the diagram below:
 
 <p align="center">
-  <a href="http://nestjs.com/" target="blank">
   <img src="src\resources\img\archproposal.png" height="300" alt="Proposal" />
-  </a>
 </p>
 
-The key concepts of this idea are:
+**Key concepts:**
 
-- **Application Domain:** This layer is composed by Models, Processors and Interfaces.
-  - **Models:** Represent the business model and gives structure to the data that the application is processing.
-  - **Processors:** As the name sugests, this components has the responsability of execute processes. That being said, it encapsulates the core business rules. The processor are the whole reason that the application existes.
-  - **Interfaces:** This components serve as a bridge between the Application Domain to the Application Service Providers. It describes all the requirements having the Models and Processor as sole base.
-- **Application Flow Control:** This layer is composed by Controllers, it controls the flow inside the application. This layer is responsible for exposing the Application resources to the external world, alongside providing the right connections between the Application Domain and Application Service Providers layers.
-- **Application Service Providers:** This layer can be separated into two components: Providers and Services.
-  - **Providers:** This components are design to met the requirments of the Application Domain Interfaces, integrating with the Services and attending to its requirements.
-  - **Services:** This components serve as a bridge between the Application Domain and the External World.
-- **Dependency Direction:** As the Clean Architecture Principles explain, the dependency direction can only point inward towards the Application Domain Layer. Obeying this principle is a key point to have a Clean Architecure.
+- **Application Domain:** Consists of Models, Processors, and Interfaces.
+  - **Models:** Represent the business model and structure the data processed by the application.
+  - **Processors:** Execute processes and encapsulate the core business rules, serving as the fundamental purpose of the application.
+  - **Interfaces:** Serve as a bridge between the Application Domain and Application Service Providers, detailing requirements based on Models and Processors.
+- **Application Flow Control:** Comprised of Controllers, this layer manages the application's internal flow. It exposes application resources to the external world and ensures proper connections between the Application Domain and Application Service Providers layers.
+- **Application Service Providers:** Divided into Providers and Services.
+  - **Providers:** Meet the Application Domain Interfaces' requirements, integrating with Services and fulfilling their needs.
+  - **Services:** Act as a bridge between the Providers and the external world.
+- **Dependency Direction:** According to Clean Architecture principles, dependencies must point inward towards the Application Domain Layer, a key aspect of maintaining a Clean Architecture.
 
-To make it clear the behavior and relations between this components I have designed the diagram below, take into consideration the presented Event Tracker Project:
+To illustrate the behavior and relationships between these components, the following diagram is provided, focusing on the Event Tracker Project:
 
 <p align="center">
-  <a href="http://nestjs.com/" target="blank">
   <img src="src\resources\img\appproposal1.png" alt="Project Diagram" />
-  </a>
 </p>
 
-To evidence that it possible to keep the Application Domain unaffected by external changes, I decided to implement another version of the API. In the diagram below you will see the two versions of the API, one integration with the SQLite Database Service and the other integrating with the DuckDB Database Service, you will notice that the Application Domaing remained the same without any changes:
+To demonstrate the Application Domain's resilience to external changes, another version of the API was implemented, simulating a possible change of Tech Stack for any given reason. The diagram below shows two API versions: one integrated with the SQLite Database Service and the other with the DuckDB Database Service. Notice that the Application Domain remains unchanged:
 
 <p align="center">
-  <a href="http://nestjs.com/" target="blank">
   <img src="src\resources\img\appproposal2.png" alt="Project Diagram" />
   </a>
 </p>
