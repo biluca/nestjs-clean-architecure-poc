@@ -4,7 +4,7 @@ import { EventsRepositorySQLiteProvider } from 'src/providers/events.sqlite.repo
 import { SQLiteGateway } from 'src/services/sqlite/sqlite.gateway';
 import { EventsV2Controller } from './api/events.v2.controller';
 import { EventsRepositoryDuckDBProvider } from 'src/providers/events.duckdb.repository.provider';
-import { DuckDBGateway } from 'src/services/duckdb/duckdb.gateway';
+import { DuckDBGateway } from 'src/services/duckdb/duckdb.service';
 
 @Module({
   imports: [],
